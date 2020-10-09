@@ -67,11 +67,16 @@ function firstPrompt() {
 
 function viewAllEmployee() {
   connection.query(
-    `SELECT employee.first_name, employee.last_name, roles.title, department.Dep_name, roles.salary 
-  FROM employee 
+    `SELECT 
+    employee.first_name, 
+    employee.last_name, 
+    roles.title, 
+    department.Dep_name, 
+    roles.salary
+  FROM employee
   LEFT JOIN roles ON employee.role_id = roles.id
   LEFT JOIN department ON department.id = roles.department_id
-   `,
+    `,
     function (err, res) {
       if (err) throw err;
       // Log all results of the SELECT statement
@@ -101,7 +106,7 @@ function viewAllEmployeeByDept() {
         `SELECT employee.first_name, employee.last_name, roles.title, department.Dep_name, roles.salary 
   FROM employee 
   LEFT JOIN roles ON employee.role_id = roles.id
-  LEFT JOIN department ON department.id = roles.department_id
+  JOIN department ON department.id = roles.department_id
   WHERE department.id = ${answers.depchoice}
    `,
         function (err, res) {
@@ -113,10 +118,36 @@ function viewAllEmployeeByDept() {
     });
 }
 
-// viewAllEmployeeByMngr(){
-// const department = [{name:Sales, value:1}, {name:Engineering, value:2}, {name:Finance, value:3}, {name:Legal, value:4} ]
-
-// }
+function viewAllEmployeeByMngr() {
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "managerchoice",
+        message: "Please select department",
+        choices: [
+          { name: "Ashley Rodriguez", value: 3 },
+          { name: "Malia Brown", value: 5 },
+          { name: "Sarah Lourd", value: 6 },
+        ],
+      },
+    ])
+    .then(function (answers) {
+      connection.query(
+        `SELECT employee.first_name, employee.last_name, roles.title, department.Dep_name, employee.manager_id AS manager, roles.salary 
+  FROM employee 
+  LEFT JOIN roles ON employee.role_id = roles.id
+  LEFT JOIN department ON department.id = roles.department_id
+  WHERE employee.manager_id = ${answers.managerchoice}
+   `,
+        function (err, res) {
+          if (err) throw err;
+          console.table(res);
+          firstPrompt();
+        }
+      );
+    });
+}
 
 function addEmployee() {
   console.log("Inserting a new product...\n");
@@ -160,12 +191,15 @@ function addEmployee() {
       },
     ])
     .then((answers) => {
-      var query = connection.query(
-        "INSERT INTO employee SET ?",
+      connection.query(
+        `SELECT employee.first_name, employee.last_name, roles.title, department.Dep_name, roles.salary 
+  FROM employee 
+  LEFT JOIN roles ON employee.role_id = roles.id
+  LEFT JOIN department ON department.id = roles.department_id INSERT INTO employee SET ?`,
         {
           first_name: answers.firstname,
           last_name: answers.lastname,
-          role: answers.employeerole,
+          roles: answers.employeerole,
           manager: answers.employeemanager,
         },
         function (err, res) {
@@ -174,7 +208,7 @@ function addEmployee() {
         }
       );
       // logs the actual query being run
-      console.log(query.sql);
+      console.table(res);
     });
 }
 
