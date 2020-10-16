@@ -17,7 +17,7 @@ VALUES
     ("John", "Doe", 1, 3),
     ("Mike", "Chan", 2, 1),
     ("Ashley", "Rodriguez", 3, null),
-    ("Kevin", "Tupik", 4, 3),
+    ("Kevin", "Tupik", 4, 5),
     ("Malia", "Brown", 5, null),
     ("Sarah", "Lourd", 6, null),
     ("Tom", "Allen", 7, 6),

@@ -134,11 +134,11 @@ function viewAllEmployeeByMngr() {
     ])
     .then(function (answers) {
       connection.query(
-        `SELECT employee.first_name, employee.last_name, roles.title, department.Dep_name, employee.manager_id AS manager, roles.salary 
+        `SELECT employee.first_name, employee.last_name, roles.title, department.Dep_name, roles.salary 
   FROM employee 
   LEFT JOIN roles ON employee.role_id = roles.id
   LEFT JOIN department ON department.id = roles.department_id
-  WHERE employee.manager_id = ${answers.managerchoice}
+  WHERE manager_id = ${answers.managerchoice}
    `,
         function (err, res) {
           if (err) throw err;
@@ -195,12 +195,12 @@ function addEmployee() {
         `SELECT employee.first_name, employee.last_name, roles.title, department.Dep_name, roles.salary 
   FROM employee 
   LEFT JOIN roles ON employee.role_id = roles.id
-  LEFT JOIN department ON department.id = roles.department_id INSERT INTO employee SET ?`,
+  LEFT JOIN department ON department.id = roles.department_id INSERT SET ?`,
         {
           first_name: answers.firstname,
           last_name: answers.lastname,
-          roles: answers.employeerole,
-          manager: answers.employeemanager,
+          title: answers.employeerole,
+
         },
         function (err, res) {
           if (err) throw err;
